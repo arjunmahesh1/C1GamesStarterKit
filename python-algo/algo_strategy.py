@@ -100,11 +100,7 @@ class AlgoStrategy(gamelib.AlgoCore):
 
                     #Added more places on the board
                     scout_spawn_location_options = []
-                    for x in range(14):
-                        scout_spawn_location_options.append([x,13 -x])
-                    for x in range(14, 28):
-                        scout_spawn_location_options.append([x, 27 - x])
-
+                    scout_spawn_location_options = [[13,0], [14,0], [1,12], [2,11], [3,10], [26,12], [25,11], [24,10]]
                     
                     best_location = self.least_damage_spawn_location(game_state, scout_spawn_location_options)
                     game_state.attempt_spawn(SCOUT, best_location, 1000)
