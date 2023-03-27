@@ -90,16 +90,15 @@ class AlgoStrategy(gamelib.AlgoCore):
                 self.demolisher_line_strategy(game_state)
             else:
                 # They don't have many units in the front so lets figure out their least defended area and send Scouts there.
-                #TODO Is this optimal strategy?
-                
+                                
                 # Only spawn Scouts every every other turn
                 # Sending more at once is better since attacks can only hit a single scout at a time
-                if game_state.turn_number % 3 == 1:
+                if game_state.turn_number % 2 == 1:
                     # To simplify we will just check sending them from back left and right
 
 
                     #Added more places on the board
-                    scout_spawn_location_options = [[13,0], [14,0],[1,12],[2,11],[3,10],[26,12],[25,11],[24,10]]
+                    scout_spawn_location_options = [[0,13],[1,12],[2,11],[3,10],[4,9],[5,8],[6,7],[7,6],[8,5],[9,4],[10,3],[11,2],[12,1],[13,0],[14,0],[15,1],[16,2],[17,3],[18,4],[19,5],[20,6],[21,7],[22,8],[23,9],[24,10],[25,11],[26,12],[27,13]]
                     deploy_locations = self.filter_blocked_locations(scout_spawn_location_options, game_state)
                     
                     best_location = self.least_damage_spawn_location(game_state, deploy_locations)
@@ -107,9 +106,10 @@ class AlgoStrategy(gamelib.AlgoCore):
 
                 # Lastly, if we have spare SP, let's build some supports
                 #TODO change to game specifications
-                support_locations = [[5, 13], [11, 13], [17, 13], [22, 13]]
+                support_locations = [[11, 13], [17, 13]]
                 #TODO Why these locations?
                 game_state.attempt_spawn(SUPPORT, support_locations)
+                game_state.attempt_spawn(TURRET, [22,13])
 
     def build_defences(self, game_state):
         """
@@ -120,7 +120,7 @@ class AlgoStrategy(gamelib.AlgoCore):
         # More community tools available at: https://terminal.c1games.com/rules#Download
 
         # Place turrets that attack enemy units
-        turret_locations = [[0, 13], [27, 13], [8, 11], [19, 11], [13, 11], [14, 11]]
+        turret_locations = [[0, 13], [27, 13], [8, 11], [19, 11], [5,13], [14, 13], [26,13]]
         
         # attempt_spawn will try to spawn units if we have resources, and will check if a blocking unit is already there
         game_state.attempt_spawn(TURRET, turret_locations)
@@ -140,11 +140,13 @@ class AlgoStrategy(gamelib.AlgoCore):
         """
         for location in self.scored_on_locations:
             # Build turret one space above so that it doesn't block our own edge spawn locations
-            build_location = [location[0], location[1]+2]
-            game_state.attempt_spawn(TURRET, build_location)
-        for i in game_state.get_resource(SP) / game_state.type_cost(TURRET)[SP]:
-            game_state.attempt_spawn(WALL, [location[0 + i], location[1]+2])
-
+            build_location1 = [location[0], location[1]+2]
+            game_state.attempt_spawn(TURRET, build_location1)
+            build_location2 = [location[0-1], location[1]+2]
+            game_state.attempt_spawn(TURRET, build_location2)
+            build_location3 = [location[0-2], location[1]+2]
+            game_state.attempt_spawn(TURRET, build_location3)
+        
     def stall_with_interceptors(self, game_state):
         """
         Send out interceptors at random locations to defend our base from enemy moving units.
