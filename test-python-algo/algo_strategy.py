@@ -110,6 +110,7 @@ class AlgoStrategy(gamelib.AlgoCore):
                 #TODO Why these locations?
                 game_state.attempt_spawn(SUPPORT, support_locations)
                 game_state.attempt_spawn(TURRET, [22,13])
+                game_state.attempt_spawn(TURRET, [13,6])
 
     def build_defences(self, game_state):
         """
@@ -140,11 +141,13 @@ class AlgoStrategy(gamelib.AlgoCore):
         """
         for location in self.scored_on_locations:
             # Build turret one space above so that it doesn't block our own edge spawn locations
-            build_location1 = [location[0], location[1]+2]
+            build_location1 = [location[0], location[1]+1]
+            # one space to the right
             game_state.attempt_spawn(TURRET, build_location1)
-            build_location2 = [location[0-1], location[1]+2]
+            build_location2 = [location[0] + 1, location[1]]
             game_state.attempt_spawn(TURRET, build_location2)
-            build_location3 = [location[0-2], location[1]+2]
+            # one space to the left
+            build_location3 = [location[0] - 1, location[1]]
             game_state.attempt_spawn(TURRET, build_location3)
         
     def stall_with_interceptors(self, game_state):
