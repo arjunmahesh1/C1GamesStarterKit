@@ -191,11 +191,14 @@ class AlgoStrategy(gamelib.AlgoCore):
 
         # Now let's build out a line of stationary units. This will prevent our demolisher from running into the enemy base.
         # Instead they will stay at the perfect distance to attack the front two rows of the enemy base.
+        turret_locations = [[1,13],[2,13],[25,13]]
+        game_state.attempt_spawn(TURRET, turret_locations)
         for x in range(27, 5, -1):
             game_state.attempt_spawn(cheapest_unit, [x, 11])
 
         # Now spawn demolishers next to the line
         # By asking attempt_spawn to spawn 1000 units, it will essentially spawn as many as we have resources for
+        game_state.attempt_spawn(SCOUT, [24,10], 2)
         game_state.attempt_spawn(DEMOLISHER, [24, 10], 1000)
 
     def least_damage_spawn_location(self, game_state, location_options):
